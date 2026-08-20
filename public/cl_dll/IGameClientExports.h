@@ -12,6 +12,7 @@
 #endif
 
 #include "interface.h"
+#include "../cl_dll/ClientInfo.h"
 
 //-----------------------------------------------------------------------------
 // Purpose: Exports a set of functions for the GameUI interface to interact with the game client
@@ -30,6 +31,9 @@ public:
 	virtual const char *GetLevelName( void ) = 0;
 
 	virtual int GetLocalPlayerTeam( void ) = 0;
+	virtual bool GetPlayerExtraInfo( int num, hud_player_info_t **player, extra_player_info_t **extra, bool *isBot ) = 0;
+	virtual bool GetTeamInfo( int num, team_info_t **team ) = 0;
+	virtual int GetPlayerSteamInfo( uint64_t steamid, sbrk_player_info_t *player ) = 0;
 };
 
 #define GAMECLIENTEXPORTS_INTERFACE_VERSION "GameClientExports001"

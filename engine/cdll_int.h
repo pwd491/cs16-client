@@ -31,6 +31,7 @@ extern "C" {
 #include "ref_params.h"
 #include "r_efx.h"
 #include "studio_event.h"
+#include "ClientInfo.h"
 
 // this file is included by both the engine and the client-dll,
 // so make sure engine declarations aren't done twice
@@ -71,24 +72,6 @@ typedef struct client_sprite_s
 	int iRes;
 	wrect_t rc;
 } client_sprite_t;
-
-
-
-typedef struct hud_player_info_s
-{
-	char *name;
-	short ping;
-	byte thisplayer;  // TRUE if this is the calling player
-
-	byte spectator;
-	byte packetloss;
-
-	char *model;
-	short topcolor;
-	short bottomcolor;
-
-	uint64 m_nSteamID;
-} hud_player_info_t;
 
 
 

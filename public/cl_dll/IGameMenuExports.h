@@ -44,7 +44,7 @@ public:
 
 	virtual int   DrawCharacter( HFont font, int ch, int x, int y, int charH, const unsigned int color, bool forceAdditive = false ) = 0;
 
-	virtual void  SetupScoreboard( int xstart, int xend, int ystart, int yend, unsigned int color, bool drawStroke ) = 0;
+	virtual void  SetupScoreboard( void ) = 0;
 	virtual void  DrawScoreboard( void ) = 0;
 
 	virtual void  DrawSpectatorMenu( void ) = 0;

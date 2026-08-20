@@ -212,9 +212,9 @@ int CHudRadar::MsgFunc_Radar(const char *pszName,  int iSize, void *pbuf )
 	if( index < 1 || index > MAX_PLAYERS )
 		return 1;
 
-	g_PlayerExtraInfo[index].origin.x = reader.ReadCoord();
-	g_PlayerExtraInfo[index].origin.y = reader.ReadCoord();
-	g_PlayerExtraInfo[index].origin.z = reader.ReadCoord();
+	g_PlayerExtraInfo[index].origin[0] = reader.ReadCoord();
+	g_PlayerExtraInfo[index].origin[1] = reader.ReadCoord();
+	g_PlayerExtraInfo[index].origin[2] = reader.ReadCoord();
 	return 1;
 }
 
@@ -513,9 +513,9 @@ int CHudRadar::MsgFunc_BombDrop(const char *pszName, int iSize, void *pbuf)
 {
 	BufferReader reader( pszName, pbuf, iSize );
 
-	g_PlayerExtraInfo[33].origin.x = reader.ReadCoord();
-	g_PlayerExtraInfo[33].origin.y = reader.ReadCoord();
-	g_PlayerExtraInfo[33].origin.z = reader.ReadCoord();
+	g_PlayerExtraInfo[33].origin[0] = reader.ReadCoord();
+	g_PlayerExtraInfo[33].origin[1] = reader.ReadCoord();
+	g_PlayerExtraInfo[33].origin[2] = reader.ReadCoord();
 
 	g_PlayerExtraInfo[33].radarflashes = 99999;
 	g_PlayerExtraInfo[33].radarflashtime = gHUD.m_flTime;
@@ -551,9 +551,9 @@ int CHudRadar::MsgFunc_HostagePos(const char *pszName, int iSize, void *pbuf)
 	int idx = reader.ReadByte();
 	if( idx >= 1 && idx <= MAX_HOSTAGES )
 	{
-		g_HostageInfo[idx].origin.x = reader.ReadCoord();
-		g_HostageInfo[idx].origin.y = reader.ReadCoord();
-		g_HostageInfo[idx].origin.z = reader.ReadCoord();
+		g_HostageInfo[idx].origin[0] = reader.ReadCoord();
+		g_HostageInfo[idx].origin[1] = reader.ReadCoord();
+		g_HostageInfo[idx].origin[2] = reader.ReadCoord();
 		g_HostageInfo[idx].dead = false;
 
 		if( Flag == 1 ) // first message about this hostage, start flashing

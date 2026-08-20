@@ -437,59 +437,7 @@ protected:
 	cvar_t *hud_centerid;
 };
 
-struct extra_player_info_t 
-{
-	short frags;
-	short deaths;
-	short team_id;
-	qboolean has_c4;
-	qboolean vip;
-	Vector origin;
-
-	// radar stuff...
-	// float radarflash;
-	// qboolean radarflashon;
-	// int radarflashes;
-	int radarflashes;
-	float radarflashtime;
-	float radarflashtimedelta;
-	bool nextflash;
-
-	short playerclass;
-	short teamnumber;
-	char teamname[MAX_TEAM_NAME];
-	bool dead;
-	float showhealth;
-	int health;
-	bool talking;
-	char location[MAX_LOCATION_NAME];
-	int sb_health;
-	int sb_account;
-	qboolean has_defuse_kit;
-};
-
-struct team_info_t 
-{
-	char name[MAX_TEAM_NAME];
-	short frags;
-	short deaths;
-	short ownteam;
-	short players;
-	int already_drawn;
-	int scores_overriden;
-	int sumping;
-	int teamnumber;
-};
-
-struct hostage_info_t
-{
-	vec3_t origin;
-	float radarflashtimedelta;
-	float radarflashtime;
-	bool dead;
-	bool nextflash;
-	int radarflashes;
-};
+#include "ClientInfo.h"
 
 extern hud_player_info_t	g_PlayerInfoList[MAX_PLAYERS+1];	   // player info from the engine
 extern extra_player_info_t  g_PlayerExtraInfo[MAX_PLAYERS+1];   // additional player info sent directly to the client dll

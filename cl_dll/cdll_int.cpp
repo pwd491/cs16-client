@@ -641,6 +641,42 @@ public:
 	{
 		return g_PlayerExtraInfo[gHUD.m_Scoreboard.m_iPlayerNum].teamnumber;
 	}
+
+	bool GetPlayerExtraInfo( int num, hud_player_info_t **player, extra_player_info_t **extra, bool *isBot ) override
+	{
+		if( num >= 0 && num < MAX_CLIENTS )
+		{
+			num++; // stupid offset
+			GetPlayerInfo( num, &g_PlayerInfoList[num] );
+
+			if( g_PlayerInfoList[num].name && g_PlayerInfoList[num].name[0] )
+			{
+				if( player ) *player = &g_PlayerInfoList[num];
+				if( extra ) *extra = &g_PlayerExtraInfo[num];
+				if( isBot ) *isBot = atoi( gEngfuncs.PlayerInfo_ValueForKey( num, "*bot" ) ) == 1;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool GetTeamInfo( int num, team_info_t **team ) override
+	{
+		if( num >= 0 && num < MAX_TEAMS )
+		{
+			if( g_TeamInfo[num].name[0] && team )
+			{
+				*team = &g_TeamInfo[num];
+				return true;
+			}
+		}
+		return false;
+	}
+
+	int GetPlayerSteamInfo( uint64_t steamid, sbrk_player_info_t *player ) override
+	{
+		return gEngfuncs.pfnGetPlayerSteamInfo( steamid, player );
+	}
 private:
 	char mapname[64];
 };

@@ -29,6 +29,9 @@
 #include "draw_util.h"
 #include "vgui_parser.h"
 #include "eventscripts.h"
+#include "ClientInfo.h"
+
+#define MAINUI_SCOREBOARD 1
 
 hud_player_info_t   g_PlayerInfoList[MAX_PLAYERS+1]; // player info from the engine
 extra_player_info_t	g_PlayerExtraInfo[MAX_PLAYERS+1]; // additional player info sent directly to the client dll
@@ -114,6 +117,11 @@ int CHudScoreboard :: Init( void )
 
 int CHudScoreboard :: VidInit( void )
 {
+	if( MAINUI_SCOREBOARD )
+	{
+		g_pMenu->SetupScoreboard();
+		return 1;
+	}
 	xstart = ScreenWidth * 0.125f;
 	xend = ScreenWidth - xstart;
 	ystart = 100;
@@ -171,6 +179,12 @@ int CHudScoreboard :: Draw( float flTime )
 	if( !ShouldDrawScoreboard( ))
 		return 1;
 
+	if( MAINUI_SCOREBOARD )
+	{
+		g_pMenu->DrawScoreboard();
+		return 1;
+	}		
+		
 	if( !m_bForceDraw )
 	{
 		xstart     = 0.125f * ScreenWidth;
