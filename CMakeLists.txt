@@ -89,15 +89,28 @@ set(YAPB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/yapb/cfg")
 
 if(ANDROID)
 	set(EXTRAS_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/android/app/src/main/assets")
+	set(EXTRAS_STAMP "${CMAKE_CURRENT_BINARY_DIR}/extras_copied.stamp")
 
-	file(GLOB EXTRAS_FILES "${EXTRAS_DIR}/*")
-	file(GLOB YAPB_FILES "${YAPB_DIR}/*" "${GRAPHS_OUTPUT}/*")
+	file(GLOB_RECURSE EXTRAS_FILES "${EXTRAS_DIR}/*")
+	file(GLOB_RECURSE YAPB_FILES "${YAPB_DIR}/*")
 
-	file(REMOVE_RECURSE ${EXTRAS_OUTPUT})
-	file(
-		COPY ${EXTRAS_FILES} ${YAPB_FILES}
-		DESTINATION ${EXTRAS_OUTPUT}
+	add_custom_command(
+		OUTPUT ${EXTRAS_STAMP}
+		COMMAND ${CMAKE_COMMAND} -E rm -rf ${EXTRAS_OUTPUT}
+		COMMAND ${CMAKE_COMMAND} -E make_directory ${EXTRAS_OUTPUT}
+		COMMAND ${CMAKE_COMMAND} -E copy_directory ${EXTRAS_DIR} ${EXTRAS_OUTPUT}
+		COMMAND ${CMAKE_COMMAND} -E copy_directory ${YAPB_DIR} ${EXTRAS_OUTPUT}
+		COMMAND ${CMAKE_COMMAND} -E copy_directory ${GRAPHS_OUTPUT} ${EXTRAS_OUTPUT}
+		COMMAND ${CMAKE_COMMAND} -E touch ${EXTRAS_STAMP}
+		DEPENDS ${EXTRAS_FILES} ${YAPB_FILES}
+		COMMENT "Copying cs16client-extras into Android assets"
+		VERBATIM
 	)
+	add_custom_target(copy_android_assets ALL DEPENDS ${EXTRAS_STAMP})
+
+	if(TARGET client)
+		add_dependencies(client copy_android_assets)
+	endif()
 else()
 	set(EXTRAS_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/extras.pk3")
 

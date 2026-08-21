@@ -101,6 +101,14 @@ android {
 	}
 }
 
+afterEvaluate {
+	tasks.matching { it.name.matches(/merge.*Assets/) }.configureEach { mergeTask ->
+		tasks.matching { it.name.contains("CMake") }.each { nativeTask ->
+			mergeTask.dependsOn(nativeTask)
+		}
+	}
+}
+
 static def getBuildNum() {
 	LocalDateTime now = LocalDateTime.now()
 	LocalDateTime releaseDate = LocalDateTime.of(2015, Month.OCTOBER, 29, 0, 0, 0)
