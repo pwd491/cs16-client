@@ -10,3 +10,6 @@
 [submodule "3rdparty/miniutl"]
 	path = 3rdparty/miniutl
 	url = https://github.com/FWGS/MiniUTL
+[submodule "3rdparty/servohtml"]
+	path = 3rdparty/servohtml
+	url = https://github.com/pwd491/servohtml.git

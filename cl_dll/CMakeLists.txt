@@ -62,6 +62,7 @@ include_directories(
 	../3rdparty/mainui_cpp/controls
 	../3rdparty/mainui_cpp/menus
 	../3rdparty/mainui_cpp/miniutl
+	../3rdparty/servohtml
 	particleman)
 
 add_definitions(-DCLIENT_WEAPONS -DCLIENT_DLL -DSTDINT_H=<cstdint>)
@@ -76,6 +77,20 @@ endif()
 add_library(${CLIENT_LIB} SHARED ${CS_CLIENT_SRC})
 
 set_target_postfix(${CLIENT_LIB})
+
+if(BUILD_SERVO)
+	target_link_libraries(${CLIENT_LIB} PRIVATE servohtml_headers)
+	target_compile_definitions(${CLIENT_LIB} PRIVATE
+		_CS16CLIENT_ENABLE_SERVO_HTML=1
+		SERVO_LIB_FILE="${SERVOHTML_LIB_FILE}")
+ 
+	if(APPLE)
+		target_link_libraries(${CLIENT_LIB} PRIVATE "-framework OpenGL")
+		target_compile_options(${CLIENT_LIB} PRIVATE -Wno-deprecated-declarations)
+	elseif(NOT WIN32)
+		target_link_libraries(${CLIENT_LIB} PRIVATE ${CMAKE_DL_LIBS})
+	endif()
+endif()
 
 install(TARGETS ${CLIENT_LIB}
 	DESTINATION "${GAME_DIR}/${CLIENT_INSTALL_DIR}/"
