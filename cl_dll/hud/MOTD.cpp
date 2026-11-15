@@ -27,10 +27,25 @@
 #include <stdio.h>
 #include "draw_util.h"
 #include "build.h"
+#include "ServoBridge.h"
 
 #if XASH_WIN32 == 1 || XASH_PSVITA == 1
 #define strcasestr strstr
 #endif
+
+static void OpenURL( )
+{
+	char* szURL = gEngfuncs.Cmd_Argv( 1 );
+	
+	if ( szURL[0] == '\0' )
+		return;
+
+	int xpos = ( ScreenWidth / 2 );
+	int ypos = ( ScreenHeight / 2 );
+	ServoUI_Create( ScreenWidth - 100, ScreenHeight - 100, xpos, ypos, szURL );
+	gHUD.m_MOTD.m_bShow = true;
+	gHUD.m_MOTD.m_iFlags |= HUD_DRAW;
+}
 
 int CHudMOTD :: Init( void )
 {
@@ -38,7 +53,12 @@ int CHudMOTD :: Init( void )
 
 	HOOK_MESSAGE( gHUD.m_MOTD, MOTD );
 
-	cl_hide_motd = CVAR_CREATE("cl_hide_motd", "0", FCVAR_ARCHIVE); // hide motd
+	cl_motd_hide = CVAR_CREATE("cl_motd_hide", "0", FCVAR_ARCHIVE); // hide motd
+	cl_motd_width = CVAR_CREATE("cl_motd_width", "1000", FCVAR_ARCHIVE);
+	cl_motd_height = CVAR_CREATE("cl_motd_height", "600", FCVAR_ARCHIVE);
+	gEngfuncs.pfnAddCommand("cl_motd_openurl", OpenURL );
+
+	ServoUI_Init();
 	Reset();
 
 	return 1;
@@ -69,12 +89,15 @@ int CHudMOTD :: Draw( float fTime )
 	if( !m_bShow )
 		return 1;
 
-	if( cl_hide_motd->value )
+	if( cl_motd_hide->value )
 	{
 		Reset();
 		return 1;
 	}
-
+	
+	ServoUI_Draw(ScreenWidth / 2, ScreenHeight / 2, ScreenWidth - 250, ScreenHeight - 100);
+	return 0;
+	
 	gHUD.m_iNoConsolePrint |= 1 << 1;
 	// find the top of where the MOTD should be drawn,  so the whole thing is centered in the screen
 	int ypos = (ScreenHeight - LINE_HEIGHT * m_iLines)/2; // shift it up slightly
@@ -84,6 +107,8 @@ int CHudMOTD :: Draw( float fTime )
 	int xmax = xpos + gHUD.GetCharWidth( 'M' ) * m_iMaxLength;
 	int height = LINE_HEIGHT * m_iLines;
 	int ypos_r=ypos;
+
+
 	if( height > ROW_RANGE_MAX )
 	{
 		ypos = ROW_RANGE_MIN + 7 + scroll;
@@ -129,7 +154,7 @@ int CHudMOTD :: Draw( float fTime )
 
 int CHudMOTD :: MsgFunc_MOTD( const char *pszName, int iSize, void *pbuf )
 {
-	if( cl_hide_motd->value )
+	if( cl_motd_hide->value )
 		return 1;
 
 	if ( m_iFlags & HUD_DRAW )

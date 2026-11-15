@@ -346,7 +346,10 @@ public:
 	void Scroll( float amount );
 	float scroll;
 	bool m_bShow;
-	cvar_t *cl_hide_motd;
+	cvar_t *cl_motd_hide;
+	cvar_t *cl_motd_openurl;
+	cvar_t *cl_motd_width;
+	cvar_t *cl_motd_height;
 
 protected:
 	static int MOTD_DISPLAY_TIME;

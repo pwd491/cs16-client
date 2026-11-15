@@ -23,6 +23,7 @@
 #include "view.h"
 #include <string.h>
 #include <ctype.h>
+#include "ServoBridge.h"
 
 #include "vgui_parser.h"
 #include "com_weapons.h"
@@ -367,6 +368,11 @@ Return 1 to allow engine to process the key, otherwise, act on it as needed
 */
 int DLLEXPORT HUD_Key_Event( int down, int keynum, const char *pszCurrentBinding )
 {
+#ifdef _CS16CLIENT_ENABLE_SERVO_HTML
+	if( ServoUI_Key( down, keynum ) )
+		return 0; // consumed by the web view
+#endif
+
 	if( g_pMenu )
 		g_pMenu->Key( keynum, down );
 

@@ -36,6 +36,7 @@
 #include "environment.h"
 
 #include "cl_util.h"
+#include "ServoBridge.h"
 
 cl_enginefunc_t		gEngfuncs  = { };
 render_api_t		gRenderAPI = { };
@@ -139,6 +140,9 @@ void DLLEXPORT HUD_Shutdown( void )
 		miniMem->Reset();
 		miniMem->Shutdown();
 	}
+#ifdef _CS16CLIENT_ENABLE_SERVO_HTML
+	ServoUI_Shutdown();
+#endif
 }
 
 
@@ -348,6 +352,9 @@ void DLLEXPORT HUD_Frame( double time )
 {
 #ifdef _CS16CLIENT_ENABLE_GSRC_SUPPORT
 	gEngfuncs.VGui_ViewportPaintBackground(HUD_GetRect());
+#endif
+#ifdef _CS16CLIENT_ENABLE_SERVO_HTML
+	ServoUI_Frame();
 #endif
 
 	// Handle menu input and mouse movement

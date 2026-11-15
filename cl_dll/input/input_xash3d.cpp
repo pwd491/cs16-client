@@ -4,6 +4,7 @@
 #include "kbutton.h"
 #include "keydefs.h"
 #include "input.h"
+#include "ServoBridge.h"
 
 #define	PITCH	0
 #define	YAW		1
@@ -128,6 +129,13 @@ void IN_ClientMoveEvent( float forwardmove, float sidemove )
 
 void IN_ClientLookEvent( float relyaw, float relpitch )
 {
+#ifdef _CS16CLIENT_ENABLE_SERVO_HTML
+	if( ServoUI_HasFocus() )
+	{
+		ServoUI_LookEvent( relyaw, relpitch );
+		return; // do not turn the view
+	}
+#endif
 	rel_yaw += relyaw;
 	rel_pitch += relpitch;
 }
@@ -176,7 +184,7 @@ void IN_Move( float frametime, usercmd_t *cmd )
 		rel_yaw *= sensitivity->value;
 		rel_pitch *= sensitivity->value;
 	}
-	if(gHUD.m_MOTD.cl_hide_motd->value == 0.0f && gHUD.m_MOTD.m_bShow)
+	if(gHUD.m_MOTD.cl_motd_hide->value == 0.0f && gHUD.m_MOTD.m_bShow)
 	{
 		gHUD.m_MOTD.scroll += rel_pitch;
 	}
@@ -218,20 +226,40 @@ void IN_Move( float frametime, usercmd_t *cmd )
 void DLLEXPORT IN_MouseEvent( int mstate )
 {
 	static int mouse_oldbuttonstate;
-	// perform button actions
+#ifdef _CS16CLIENT_ENABLE_SERVO_HTML
+	static int uiButtons; // buttons whose press went to the web view
+#endif
 	for( int i = 0; i < 5; i++ )
 	{
-		if(( mstate & (1 << i)) && !( mouse_oldbuttonstate & (1 << i)))
+		bool now = ( mstate & ( 1 << i )) != 0;
+		bool was = ( mouse_oldbuttonstate & ( 1 << i )) != 0;
+
+		if( now && !was )
 		{
+#ifdef _CS16CLIENT_ENABLE_SERVO_HTML
+			if( ServoUI_HasFocus() )
+			{
+				ServoUI_MouseButton( i, true );
+				uiButtons |= 1 << i;
+				continue;
+			}
+#endif
 			gEngfuncs.Key_Event( K_MOUSE1 + i, 1 );
 		}
-
-		if( !( mstate & (1 << i)) && ( mouse_oldbuttonstate & (1 << i)))
+		else if( !now && was )
 		{
+#ifdef _CS16CLIENT_ENABLE_SERVO_HTML
+			if( uiButtons & ( 1 << i ))
+			{
+				ServoUI_MouseButton( i, false );
+				uiButtons &= ~( 1 << i );
+				continue;
+			}
+#endif
 			gEngfuncs.Key_Event( K_MOUSE1 + i, 0 );
 		}
-	}	
-	
+	}
+
 	mouse_oldbuttonstate = mstate;
 	bMouseInUse = true;
 }
