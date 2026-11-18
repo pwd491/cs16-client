@@ -20,6 +20,7 @@
 		#define WIN32_LEAN_AND_MEAN
 	#endif
 	#include <windows.h>
+	#include <cstdarg>
 #else
 	#include <dlfcn.h>
 	#if defined( __APPLE__ )
@@ -250,12 +251,12 @@ static bool LoadApi()
 
 #if defined( _WIN32 )
 	SetDllDirectoryA( dir.c_str() );
-	g_lib = (void *)LoadLibraryExA(
-		path.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH );
+	g_lib = (void*)LoadLibraryExA( path.c_str(), nullptr,
+		LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS );
 
 	if( !g_lib )
 	{
-		ServoLog( 3, "LoadLibrary(%s) failed, error %lu", path.c_str(), GetLastError() )
+		ServoLog( 3, "LoadLibrary(%s) failed, error %lu", path.c_str(), GetLastError() );
 		return false;
 	}
 #else
