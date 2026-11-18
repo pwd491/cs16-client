@@ -19,8 +19,10 @@
 	#ifndef WIN32_LEAN_AND_MEAN
 		#define WIN32_LEAN_AND_MEAN
 	#endif
-	#include <windows.h>
-	#include <cstdarg>
+    #define HSPRITE WINDOWS_HSPRITE
+    #include <windows.h>
+    #undef HSPRITE
+    #include <cstdarg>
 #else
 	#include <dlfcn.h>
 	#if defined( __APPLE__ )
@@ -325,30 +327,6 @@ void ServoUI_Init()
 
 	if( !LoadApi() )
 		return;
-
-	if( !g_cmdsRegistered )
-	{
-		g_cmdsRegistered = true;
-
-		g_cursorScale = gEngfuncs.pfnRegisterVariable(
-				"servo_cursor_scale", "1", 0 );
-
-		gEngfuncs.pfnAddCommand(
-				"servo_focus",
-				[]() {
-						ServoUI_SetFocus( !g_focus );
-				} );
-
-		gEngfuncs.pfnAddCommand(
-				"servo_url",
-				[]() {
-					if( g_view && gEngfuncs.Cmd_Argc() > 1 )
-					{
-						GlGuard guard;
-						g_api.load_url( g_view, gEngfuncs.Cmd_Argv( 1 ) );
-					}
-				} );
-	}
 }
 
 bool ServoUI_Create( int w, int h, int posX, int posY, const char *url )

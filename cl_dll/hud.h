@@ -350,6 +350,7 @@ public:
 	cvar_t *cl_motd_openurl;
 	cvar_t *cl_motd_width;
 	cvar_t *cl_motd_height;
+	cvar_t *cl_motd_destroy;
 
 protected:
 	static int MOTD_DISPLAY_TIME;

@@ -279,6 +279,9 @@ void DLLEXPORT HUD_Init( void )
 {
 	LoadMenuInterface();
 	InitInput();
+#ifdef _CS16CLIENT_ENABLE_SERVO_HTML
+	ServoUI_Init();
+#endif
 	gHUD.Init();
 	
 	// Initialize menu if it's loaded

@@ -57,7 +57,7 @@ int CHudMOTD :: Init( void )
 	cl_motd_width = CVAR_CREATE("cl_motd_width", "1000", FCVAR_ARCHIVE);
 	cl_motd_height = CVAR_CREATE("cl_motd_height", "600", FCVAR_ARCHIVE);
 	gEngfuncs.pfnAddCommand("cl_motd_openurl", OpenURL );
-
+	gEngfuncs.pfnAddCommand("cl_motd_close", ServoUI_Shutdown );
 	ServoUI_Init();
 	Reset();
 
